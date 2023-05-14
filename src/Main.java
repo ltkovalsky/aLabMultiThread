@@ -4,6 +4,18 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
+        /*
+            Solution for situation when we have 2 different source of data (counters in threads) that must be merged into 1 resource (result.txt)
+
+                                    source1     source2
+                                        |          |
+                                   processing  processing
+                                         \        /
+                                          \      /
+                                            file
+
+            For another solution look "/atomic" branch
+         */
 
         FileUtil fu = new FileUtil();
         File result = fu.getFile();
