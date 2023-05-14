@@ -20,7 +20,16 @@ public class FileUtil {
         boolean doWrite;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
-            doWrite = isNull(line) || (!line.startsWith(num + " ") && !line.endsWith(" " + num) && !line.contains(" " + num + " "));
+            int lastNumInFile;
+            if (!isNull(line)) {
+                int lastWhiteSpaceIdx = line.stripTrailing().lastIndexOf(" ");
+                String strForParseInt = lastWhiteSpaceIdx == -1 ? line.strip() : line.substring(lastWhiteSpaceIdx).strip();
+                lastNumInFile = Integer.parseInt(strForParseInt);
+            } else {
+                lastNumInFile = 0;
+            }
+
+            doWrite = isNull(line) || lastNumInFile < num;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
