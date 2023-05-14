@@ -18,22 +18,28 @@ public class Main {
                 }
             }
             boolean flag;
-            for (int i = 2; i <= 1000000; i++) {
+            int num = 2;
+
+            do {
                 flag = true;
 
-                for (int j = 2; j < i; j++) {
-                    if ((i % j == 0)) {
+                for (int j = 2; j < num; j++) {
+                    if ((num % j == 0)) {
                         flag = false;
                         break;
                     }
                 }
 
                 if (flag) {
-                    if (fu.writeIfNotExists(i, result)) {
-                        fu.append(i + " ", tFile);
+                    int lastNumInFile = fu.writeIfNotExists(num, result);
+                    if (lastNumInFile < num) {
+                        fu.append(num + " ", tFile);
+                    } else {
+                        num = lastNumInFile;
                     }
                 }
-            }
+                num++;
+            } while (num < 1000000);
         };
 
 
