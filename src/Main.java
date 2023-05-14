@@ -1,20 +1,23 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
 
+    static AtomicInteger num = new AtomicInteger(1);
+
     public static void main(String[] args) {
         /*
-            Solution for situation when we have 2 different source of data (counters in threads) that must be merged into 1 resource (result.txt)
-
-                                    source1     source2
-                                        |          |
-                                   processing  processing
-                                         \        /
-                                          \      /
-                                            file
-
-            For another solution look "/atomic" branch
+            Solution for situation where different threads have common iteration counter:
+                                counter
+                                  /\
+                                 /  \
+                                /    \
+                               /      \
+                        processing  processing
+                               \      /
+                                \    /
+                                 file
          */
 
         FileUtil fu = new FileUtil();
@@ -30,32 +33,24 @@ public class Main {
                 }
             }
             boolean flag;
-            int num = 2;
-
+            int threadLocalValue;
             do {
+                threadLocalValue = num.incrementAndGet();
                 flag = true;
 
-                for (int j = 2; j < num; j++) {
-                    if ((num % j == 0)) {
+                for (int j = 2; j < threadLocalValue; j++) {
+                    if ((threadLocalValue % j == 0)) {
                         flag = false;
                         break;
                     }
                 }
 
                 if (flag) {
-                    int lastNumInFile = fu.readLastNumInFile(result);
-                    if (lastNumInFile < num) {
-                        if (fu.writeIfNotExists(num, result)) {
-                            fu.append(num + " ", tFile);
-                        }
-                    } else {
-                        num = lastNumInFile;
-                    }
+                    fu.writeIfNotExists(threadLocalValue, result);
+                    fu.append(threadLocalValue + " ", tFile);
                 }
-                num++;
-            } while (num < 1000000);
+            } while (threadLocalValue < 1000000);
         };
-
 
         Thread t1 = new Thread(a, "Thread1");
         Thread t2 = new Thread(a, "Thread2");
