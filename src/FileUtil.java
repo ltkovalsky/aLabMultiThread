@@ -3,6 +3,7 @@ import java.io.*;
 import static java.util.Objects.isNull;
 
 public class FileUtil {
+
     public File getFile() {
         File result = new File("Result.txt");
         if (!result.exists()) {
@@ -15,13 +16,15 @@ public class FileUtil {
         return result;
     }
 
-    public synchronized int writeIfNotExists(int num, File file) {
+    public synchronized boolean writeIfNotExists(int num, File file) {
+        boolean result = false;
         int lastNumInFile = readLastNumInFile(file);
         if (lastNumInFile < num) {
             System.out.println(Thread.currentThread().getName() + " trying to write " + num);
             append(num + " ", file);
+            result = true;
         }
-        return lastNumInFile;
+        return result;
     }
 
     public int readLastNumInFile(File file) {
@@ -42,14 +45,9 @@ public class FileUtil {
 
     public void append(String str, File file) {
         try (FileWriter writer = new FileWriter(file, true)) {
-
             writer.write(str);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public FileUtil FileUtil() {
-        return this;
     }
 }

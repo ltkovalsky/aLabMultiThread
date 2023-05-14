@@ -31,9 +31,11 @@ public class Main {
                 }
 
                 if (flag) {
-                    int lastNumInFile = fu.writeIfNotExists(num, result);
+                    int lastNumInFile = fu.readLastNumInFile(result);
                     if (lastNumInFile < num) {
-                        fu.append(num + " ", tFile);
+                        if (fu.writeIfNotExists(num, result)) {
+                            fu.append(num + " ", tFile);
+                        }
                     } else {
                         num = lastNumInFile;
                     }
